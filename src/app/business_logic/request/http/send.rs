@@ -102,7 +102,10 @@ pub async fn send_http_request(prepared_request: reqwest_middleware::RequestBuil
                                         // Match the file format
                                         match file_format.as_str() {
                                             "json" => {
-                                                result_body = jsonxf::pretty_print(&result_body).unwrap_or(result_body);
+                                                // result_body = jsonxf::pretty_print(&result_body).unwrap_or(result_body);
+                                                result_body = serde_json::from_str::<serde_json::Value>(&result_body)
+                                                    .and_then(|value| serde_json::to_string_pretty(&value))
+                                                    .unwrap_or(result_body);
                                             },
                                             _ => {}
                                         }
